@@ -1,7 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { v2Post, uploadBinaryToUrl, handleApiError } from "../services/linkedin-client.js";
-import { AssetUploadResponse } from "../types.js";
+import { restPost, uploadBinaryToUrl, handleApiError } from "../services/linkedin-client.js";
 
 const UploadImageInputSchema = z
   .object({
@@ -28,13 +27,13 @@ export function registerMediaTools(server: McpServer): void {
     "linkedin_upload_image",
     {
       title: "Upload LinkedIn Image",
-      description: `Upload an image to LinkedIn and get an asset URN to use when creating an image post.
+      description: `Upload an image to LinkedIn and get an image URN to use when creating an image post.
 
 This is a two-step process handled automatically:
-  1. Register the upload with LinkedIn to get a pre-signed upload URL
+  1. Initialize the upload via /rest/images to get a pre-signed upload URL
   2. PUT the image binary to that URL
 
-After upload, use the returned asset URN as image_asset_urn in linkedin_create_post.
+After upload, use the returned image URN as image_asset_urn in linkedin_create_post.
 
 Requires scope: w_member_social
 
@@ -45,7 +44,7 @@ Args:
 
 Returns:
   {
-    "asset_urn": string,  // e.g., "urn:li:digitalmediaAsset:C5600AQH..."
+    "asset_urn": string,  // e.g., "urn:li:image:C5622AQH..."
     "upload_url": string  // The URL that was used for upload (informational)
   }
 
@@ -66,42 +65,32 @@ Error Handling:
     },
     async (params: UploadImageInput) => {
       try {
-        // Step 1: Register the upload
-        const registerBody = {
-          registerUploadRequest: {
+        // Step 1: Initialize the upload via the modern /rest/images endpoint.
+        // This returns an image URN (urn:li:image:...) that is compatible with
+        // the versioned /rest/posts API. The legacy /v2/assets endpoint returns
+        // urn:li:digitalmediaAsset:... which is rejected by /rest/posts.
+        const initBody = {
+          initializeUploadRequest: {
             owner: params.author_urn,
-            recipes: ["urn:li:digitalmediaRecipe:feedshare-image"],
-            serviceRelationships: [
-              {
-                identifier: "urn:li:userGeneratedContent",
-                relationshipType: "OWNER",
-              },
-            ],
           },
         };
 
-        const registerResponse = await v2Post<{
+        const initResponse = await restPost<{
           value: {
-            asset: string;
-            uploadMechanism: {
-              "com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest": {
-                uploadUrl: string;
-              };
-            };
+            uploadUrl: string;
+            image: string;
+            uploadUrlExpiresAt?: number;
           };
-        }>("/assets?action=registerUpload", registerBody);
+        }>("/images?action=initializeUpload", initBody);
 
-        const assetUrn = registerResponse.value.asset;
-        const uploadUrl =
-          registerResponse.value.uploadMechanism[
-            "com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"
-          ].uploadUrl;
+        const imageUrn = initResponse.value.image;
+        const uploadUrl = initResponse.value.uploadUrl;
 
-        // Step 2: Upload the binary
+        // Step 2: PUT the image binary to the pre-signed URL
         const imageBuffer = Buffer.from(params.image_base64, "base64");
         await uploadBinaryToUrl(uploadUrl, imageBuffer, params.mime_type);
 
-        const result = { asset_urn: assetUrn, upload_url: uploadUrl };
+        const result = { asset_urn: imageUrn, upload_url: uploadUrl };
 
         return {
           content: [
@@ -110,9 +99,9 @@ Error Handling:
               text: [
                 "Image uploaded successfully.",
                 "",
-                `**Asset URN:** ${assetUrn}`,
+                `**Image URN:** ${imageUrn}`,
                 "",
-                "Use this asset URN as the `image_asset_urn` parameter in `linkedin_create_post`.",
+                "Use this URN as the `image_asset_urn` parameter in `linkedin_create_post`.",
               ].join("\n"),
             },
           ],
