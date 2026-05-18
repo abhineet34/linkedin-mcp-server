@@ -251,19 +251,32 @@ Once connected, just talk to Claude naturally:
 
 ---
 
-## Available Tools (for developers)
+## Available Tools
 
-| Tool | Description |
-|---|---|
-| `linkedin_get_profile` | Get your LinkedIn profile |
-| `linkedin_create_post` | Create a post (text, image, or article) |
-| `linkedin_get_post` | Get a post by its URN |
-| `linkedin_list_posts` | List posts by a member or company |
-| `linkedin_update_post` | Edit a post's text or visibility |
-| `linkedin_delete_post` | Delete a post |
-| `linkedin_upload_image` | Upload an image to use in a post |
-| `linkedin_get_organization` | Look up a company page |
-| `linkedin_get_org_follower_count` | Get a company page's follower count |
+### ✅ Verified working with self-serve scopes
+
+These tools work with the standard scopes anyone can grant themselves (`openid`, `profile`, `email`, `w_member_social`) and have been tested end-to-end:
+
+| Tool | Description | Required scope |
+|---|---|---|
+| `linkedin_get_profile` | Get your LinkedIn profile (name, email, photo, URN) | `openid profile email` |
+| `linkedin_create_post` | Create a post (text, image, or article/link) | `w_member_social` |
+| `linkedin_update_post` | Edit a post's text or visibility | `w_member_social` |
+| `linkedin_delete_post` | Delete a post | `w_member_social` |
+| `linkedin_upload_image` | Upload an image to use in a post | `w_member_social` |
+
+### ⚠️ Approval-gated (not tested with self-serve scopes)
+
+These tools require LinkedIn-approved scopes that **are not available to all developers**. They're included in the codebase for users who have partner-level access (e.g., approved Marketing Developer Platform, Community Management API, or Page Admin programs), but they have **not been verified end-to-end** with the standard self-serve flow described in this README.
+
+| Tool | Description | Required scope | LinkedIn approval needed? |
+|---|---|---|---|
+| `linkedin_get_post` | Get a post by its URN | `r_member_social` or `r_organization_social` | Yes |
+| `linkedin_list_posts` | List posts by a member or company | `r_member_social` or `r_organization_social` | Yes |
+| `linkedin_get_organization` | Look up a company page | `rw_organization_admin` | Yes (Page admin role) |
+| `linkedin_get_org_follower_count` | Get a company page's follower count | `rw_organization_admin` | Yes (Page admin role) |
+
+> If you have approved access to these scopes and successfully use any of these tools, please open an issue or PR — we'd love to confirm them as verified and document any quirks.
 
 ---
 
@@ -273,7 +286,7 @@ Once connected, just talk to Claude naturally:
 - **[@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk)** — official MCP SDK
 - **[Zod](https://zod.dev/)** — runtime schema validation
 - **[Axios](https://axios-http.com/)** — HTTP client
-- **LinkedIn REST API** v202605 (with v2 fallback for OIDC userinfo and asset upload)
+- **LinkedIn REST API** v202604 (configurable via `LINKEDIN_API_VERSION` env var; v2 fallback used only for OIDC userinfo)
 
 The codebase is intentionally small and easy to extend — one file per tool domain (`profile`, `posts`, `media`, `organizations`).
 
