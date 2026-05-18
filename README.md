@@ -1,17 +1,61 @@
 # LinkedIn MCP Server
 
-Connect Claude (or any MCP client) to your LinkedIn account. Once set up, you can ask Claude to write and publish posts, upload images, look up company pages, and more — directly from your chat.
+> **Post to LinkedIn from Claude.** A Model Context Protocol (MCP) server that lets Claude Desktop, Claude Code, and any MCP-compatible AI assistant publish posts, upload images, and manage company pages on LinkedIn — using natural language.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![MCP](https://img.shields.io/badge/MCP-1.6+-purple.svg)](https://modelcontextprotocol.io/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/abhineet34/linkedin-mcp-server/pulls)
+
+Imagine asking Claude *"draft a LinkedIn post about my latest project and publish it"* — and it just happens. That's what this MCP server enables.
 
 ---
 
-## What can it do?
+## ✨ Features
 
-- **Get your profile** — fetch your name, email, and photo
-- **Create posts** — text, image, or article/link posts
-- **Edit & delete posts** — update or remove posts you've published
-- **Upload images** — attach images to your posts
-- **Look up company pages** — search by name or ID
-- **Get follower counts** — see how many followers a company page has
+| | |
+|---|---|
+| 📝 **Create posts** | Publish text, image, or article/link posts |
+| 🖼️ **Upload images** | Attach images to posts in one workflow |
+| ✏️ **Edit & delete** | Update post text/visibility or remove posts entirely |
+| 👤 **Profile** | Fetch your name, email, photo, and LinkedIn URN |
+| 🏢 **Companies** | Look up company pages by name or ID |
+| 📊 **Follower counts** | Get follower stats for any company page |
+| 🤖 **Works with any MCP client** | Claude Desktop, Claude Code, Cline, Continue, etc. |
+| 🔐 **OAuth 2.0 secured** | Industry-standard auth, runs locally on your machine |
+
+---
+
+---
+
+## 💬 What it looks like
+
+Once connected, just talk to Claude naturally:
+
+```
+You:    Draft a LinkedIn post announcing my new open-source project and publish it.
+
+Claude: Here's a draft:
+
+        🚀 Just open-sourced linkedin-mcp-server — an MCP server that lets
+        Claude post to LinkedIn directly. No more copy-pasting drafts.
+
+        Built with TypeScript and the LinkedIn REST API. Star on GitHub if
+        you find it useful!
+
+        Should I post this?
+
+You:    Yes, publish it.
+
+Claude: ✅ Posted. URN: urn:li:share:7339284...
+```
+
+Other things you can ask:
+- *"Look up the LinkedIn page for OpenAI and tell me how many followers they have"*
+- *"Delete my last LinkedIn post"*
+- *"Edit my latest post to add a link to the docs"*
+- *"Share this article on LinkedIn with a short intro: https://..."*
 
 ---
 
@@ -223,6 +267,52 @@ Once connected, just talk to Claude naturally:
 
 ---
 
+## 🛠️ Tech stack
+
+- **TypeScript** — fully typed, strict mode
+- **[@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk)** — official MCP SDK
+- **[Zod](https://zod.dev/)** — runtime schema validation
+- **[Axios](https://axios-http.com/)** — HTTP client
+- **LinkedIn REST API** v202605 (with v2 fallback for OIDC userinfo and asset upload)
+
+The codebase is intentionally small and easy to extend — one file per tool domain (`profile`, `posts`, `media`, `organizations`).
+
+---
+
+## 🤝 Contributing
+
+Issues and PRs are welcome! If you have an idea, find a bug, or want to add a new LinkedIn API tool, open an issue first to discuss.
+
+**Ideas for contributions:**
+- Add tools for LinkedIn comments and reactions
+- Add scheduled post support
+- Add carousel post support (multi-image)
+- Improve error messages with more context
+- Add a CLI mode for direct usage outside MCP clients
+
+---
+
+## 🔗 Related projects
+
+- **[Model Context Protocol](https://modelcontextprotocol.io/)** — the open standard this server is built on
+- **[Anthropic Claude](https://claude.ai/)** — the AI assistant this server is primarily designed for
+- **[MCP Server Registry](https://github.com/modelcontextprotocol/servers)** — a curated list of MCP servers
+- **[Claude Desktop](https://claude.ai/download)** — install to use this server with Claude
+
+---
+
+## ⚠️ Disclaimer
+
+This is an unofficial integration. It is not affiliated with, endorsed by, or sponsored by LinkedIn Corporation. Use responsibly and within [LinkedIn's API terms of service](https://legal.linkedin.com/api-terms-of-use).
+
+---
+
+## ⭐ Star the repo
+
+If this saved you time, [star the repo](https://github.com/abhineet34/linkedin-mcp-server/stargazers) — it helps other developers find it.
+
+---
+
 ## License
 
-MIT
+[MIT](LICENSE) © [Abhineet Pratap Singh](https://www.linkedin.com/in/mr-abhineet/)

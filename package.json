@@ -1,7 +1,7 @@
 {
   "name": "linkedin-mcp-server",
   "version": "1.0.0",
-  "description": "MCP server for LinkedIn API integration",
+  "description": "MCP server for LinkedIn — post to LinkedIn from Claude, upload images, and manage company pages via natural language.",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -10,6 +10,33 @@
     "build": "tsc",
     "clean": "rm -rf dist"
   },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "linkedin",
+    "linkedin-api",
+    "claude",
+    "claude-desktop",
+    "anthropic",
+    "model-context-protocol",
+    "ai",
+    "automation",
+    "social-media",
+    "typescript"
+  ],
+  "author": {
+    "name": "Abhineet Pratap Singh",
+    "url": "https://www.linkedin.com/in/mr-abhineet/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abhineet34/linkedin-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/abhineet34/linkedin-mcp-server/issues"
+  },
+  "homepage": "https://github.com/abhineet34/linkedin-mcp-server#readme",
   "engines": {
     "node": ">=18"
   },
