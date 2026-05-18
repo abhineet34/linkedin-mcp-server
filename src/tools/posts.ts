@@ -135,6 +135,21 @@ function encodeUrn(urn: string): string {
   return encodeURIComponent(urn);
 }
 
+/**
+ * Escape a string for LinkedIn's "Little Text" format used by the
+ * /rest/posts `commentary` field.
+ *
+ * LinkedIn's parser uses these characters as syntactic delimiters and silently
+ * truncates the post at the first un-escaped occurrence. We escape them by
+ * prefixing with a backslash. `#` and `@` are intentionally left un-escaped
+ * so hashtags and mentions still render as clickable entities.
+ *
+ * Reference: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api#text-format
+ */
+function escapeLittleText(text: string): string {
+  return text.replace(/([()<>\\*_{}\[\]~])/g, "\\$1");
+}
+
 function formatPost(post: LinkedInPost): string {
   const lines: string[] = [];
   lines.push(`## Post ${post.id}`);
@@ -198,7 +213,7 @@ Error Handling:
       try {
         const body: Record<string, unknown> = {
           author: params.author_urn,
-          commentary: params.text,
+          commentary: escapeLittleText(params.text),
           visibility: params.visibility,
           lifecycleState: "PUBLISHED",
           distribution: {
@@ -490,7 +505,7 @@ Error Handling:
         const patch: Record<string, unknown> = {
           patch: {
             $set: {
-              commentary: params.text,
+              commentary: escapeLittleText(params.text),
               ...(params.visibility ? { visibility: params.visibility } : {}),
             },
           },
