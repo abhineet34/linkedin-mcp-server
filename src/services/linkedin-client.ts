@@ -96,6 +96,17 @@ export async function restPost<T>(path: string, body: unknown): Promise<T> {
     headers: buildHeaders(true),
     timeout: REQUEST_TIMEOUT_MS,
   });
+  // LinkedIn's POST /rest/posts returns the new URN in the `x-restli-id` header
+  // rather than the body. Merge it into the returned data so callers always
+  // see the created entity's ID.
+  const headerId =
+    response.headers?.["x-restli-id"] ?? response.headers?.["X-RestLi-Id"];
+  if (headerId && typeof response.data === "object" && response.data !== null) {
+    (response.data as Record<string, unknown>).id =
+      (response.data as Record<string, unknown>).id ?? headerId;
+  } else if (headerId) {
+    return { id: headerId } as unknown as T;
+  }
   return response.data;
 }
 
