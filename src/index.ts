@@ -32,27 +32,31 @@ registerPostTools(server);
 registerMediaTools(server);
 registerOrganizationTools(server);
 
-async function runStdio(): Promise<void> {
+function warnIfTokenMissing(): void {
+  // We don't fail-fast on a missing token because MCP introspection (listing
+  // tools/resources) should work without one — directories like Glama spin
+  // the server up in a sandbox to verify it responds to tools/list. The token
+  // is enforced lazily at the point any tool actually calls the LinkedIn API.
   if (!process.env.LINKEDIN_ACCESS_TOKEN) {
     console.error(
-      "ERROR: LINKEDIN_ACCESS_TOKEN environment variable is required.\n" +
-        "Obtain an OAuth 2.0 access token from the LinkedIn Developer Portal " +
-        "and export it before starting the server."
+      "[linkedin-mcp-server] LINKEDIN_ACCESS_TOKEN is not set. " +
+        "The server will start and respond to introspection, but every tool " +
+        "call will return an auth error until you set the token. " +
+        "Obtain one from the LinkedIn Developer Portal: " +
+        "https://www.linkedin.com/developers/tools/oauth/token-generator"
     );
-    process.exit(1);
   }
+}
+
+async function runStdio(): Promise<void> {
+  warnIfTokenMissing();
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("LinkedIn MCP server running via stdio");
 }
 
 async function runHTTP(): Promise<void> {
-  if (!process.env.LINKEDIN_ACCESS_TOKEN) {
-    console.error(
-      "ERROR: LINKEDIN_ACCESS_TOKEN environment variable is required."
-    );
-    process.exit(1);
-  }
+  warnIfTokenMissing();
 
   const app = express();
   app.use(express.json());
