@@ -1,0 +1,8 @@
+{
+  "$schema": "https://glama.ai/mcp/glama.schema.json",
+  "name": "linkedin-mcp-server",
+  "description": "Post to LinkedIn from Claude using the official LinkedIn REST API. Create, edit, and delete posts; upload images; fetch your profile; and look up company pages — all from Claude Desktop, Claude Code, or any MCP-compatible client.",
+  "homepage": "https://github.com/abhineet34/linkedin-mcp-server",
+  "license": "MIT",
+  "tags": ["linkedin", "social-media", "posting", "oauth", "typescript"]
+}

@@ -2,6 +2,7 @@
 
 > **Post to LinkedIn from Claude.** A Model Context Protocol (MCP) server that lets Claude Desktop, Claude Code, and any MCP-compatible AI assistant publish posts, upload images, and manage company pages on LinkedIn — using natural language.
 
+[![Glama](https://glama.ai/mcp/servers/abhineet34/linkedin-mcp-server/badges/score.svg)](https://glama.ai/mcp/servers/abhineet34/linkedin-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
